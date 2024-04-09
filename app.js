@@ -67,6 +67,11 @@ passport.use(samlStrategy);
 
 app.get(
   '/login',
+  (req,res,next) => {
+    console.log("rim I am here")
+    console.log(req.body)
+    next()
+  },
   passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
   (req, res) => {
     console.log("Send login requeset")
