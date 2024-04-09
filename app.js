@@ -29,8 +29,8 @@ passport.deserializeUser((user, done) => done(null, user));
 const samlStrategy = new SamlStrategy(
   {
     entryPoint: 'https://login.salesforce.com/?so=YOUR_ORG_ID',
-    issuer: 'https://yourapp.com',
-    callbackUrl: 'https://yourapp.com/api/auth/saml/callback',
+    issuer: 'https://bet123.ninja',
+    callbackUrl: 'https://bet123.ninja.com/api/auth/saml/callback',
     cert: '-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----', // Salesforce certificate
   },
   (profile, done) => done(null, profile)
@@ -41,7 +41,10 @@ passport.use(samlStrategy);
 app.get(
   '/login',
   passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
-  (req, res) => res.redirect('/')
+  (req, res) => {
+    console.log("Send login requeset")
+    res.redirect('/')
+  }
   // (req, res) => {
   //   console.log(123)
   // }
@@ -53,6 +56,7 @@ app.post(
   passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
   (req, res) => {
     // Successful authentication
+    console.log("Succeed !")
     res.redirect('/');
   }
 );
