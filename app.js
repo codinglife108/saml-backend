@@ -40,11 +40,11 @@ passport.use(samlStrategy);
 
 app.get(
   '/login',
-  // passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
-  // (req, res) => res.redirect('/')
-  (req, res) => {
-    console.log(123)
-  }
+  passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
+  (req, res) => res.redirect('/')
+  // (req, res) => {
+  //   console.log(123)
+  // }
 
 );
 
