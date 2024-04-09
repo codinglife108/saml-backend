@@ -1,23 +1,23 @@
-require('dotenv').config()
+require('dotenv').config();
 
 const cors = require('cors');
 const path = require('path');
 const http = require('http');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const SamlStrategy = require('passport-saml').Strategy;
 
 const app = express();
-const server = http.Server(app)
+const server = http.Server(app);
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT;
 
-app.use(cors())
-app.use(express.static(__dirname + '/client/build'))
-app.use(bodyParser.json({ limit: "15360mb", type: 'application/json' }))
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cors());
+app.use(express.static(__dirname + '/client/build'));
+app.use(bodyParser.json({ limit: '15360mb', type: 'application/json' }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(session({ secret: process.env.SECRET, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
@@ -27,12 +27,13 @@ passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
 
 const samlStrategy = new SamlStrategy(
-  {
-    entryPoint: 'https://login.salesforce.com/?so=00D7R000005HjV2',
-    issuer: 'https://saas-innovation-41572.my.salesforce.com',
-    callbackUrl: 'https://bet123.ninja.com/api/auth/saml/callback',
-    cert: 
-`-----BEGIN CERTIFICATE-----
+    {
+        entryPoint: 'https://login.salesforce.com/?so=00D7R000005HjV2'
+        + "&metaAlias=/idp"
+        + "&spEntityID=https://bet123.ninja/metadata/",
+        issuer: 'https://saas-innovation-41572.my.salesforce.com',
+        callbackUrl: 'https://bet123.ninja.com/api/auth/saml/callback',
+        cert: `-----BEGIN CERTIFICATE-----
 MIIErDCCA5SgAwIBAgIOAY7DS+C5AAAAAA4BZpEwDQYJKoZIhvcNAQELBQAwgZAx
 KDAmBgNVBAMMH1NlbGZTaWduZWRDZXJ0XzA5QXByMjAyNF8xNDM4MzMxGDAWBgNV
 BAsMDzAwRDdSMDAwMDA1SGpWMjEXMBUGA1UECgwOU2FsZXNmb3JjZS5jb20xFjAU
@@ -59,45 +60,70 @@ zP5No+QXi2lDWTIpeJo7ldZB5lFjU7CmyWOK/zU6oVFm5j0xNVvAGpS8n9M3YNLe
 04ZNJkhUNgauTgpnYbkp9XAKbyTFjmRe0Bs3nuLjMeR8WfWpXNzltg3dqLArHnwD
 Nl6CraLpIYUiNhlo/aTt7aJDLU7S1ssfbBUaSAvlBhOJndibRrS9LdBr/RzuGy5D
 -----END CERTIFICATE-----`, // Salesforce certificate
-  },
-  (profile, done) => done(null, profile)
+    },
+    function (profile, done) {
+        console.log('profile', profile);
+        return done(null, {
+            id: profile.id,
+            email: profile.email,
+            // displayName: profile.cn,
+            //  firstName: profile.givenName,
+            // lastName: profile.sn,
+            sessionIndex: profile.sessionIndex,
+            saml: {
+                nameID: profile.nameID,
+                nameIDFormat: profile.nameIDFormat,
+                token: profile.getAssertionXml(),
+            },
+        });
+    }
 );
 
 passport.use(samlStrategy);
 
-app.get(
-  '/login',
-  (req,res,next) => {
-    console.log("rim I am here")
-    console.log(req.body)
-    next()
-  },
-  passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
-  (req, res) => {
-    console.log("Send login requeset")
-    res.redirect('/')
-  }
-  // (req, res) => {
-  //   console.log(123)
-  // }
+app.get('/metadata', function (req, res) {
+  //Send custom metadata
+       res.type('application/xml');
+       res.sendfile(__dirname + "/metadata.xml");
+     }
+   );
 
+app.get(
+    '/login',
+    (req, res, next) => {
+        console.log('rim I am here');
+        console.log(req.body);
+        next();
+    },
+    passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
+    (req, res) => {
+        console.log('Send login requeset');
+        res.redirect('/');
+    }
+    // (req, res) => {
+    //   console.log(123)
+    // }
 );
 
 app.post(
-  '/api/auth/saml/callback',
-  (req,res,next) => {
-    console.log("rim you are there")
-    console.log(req.body)
-    next()
-  },
-  passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
-  (req, res) => {
-    // Successful authentication
-    console.log("Succeed !")
-    res.redirect('/');
-  }
+    '/api/auth/saml/callback',
+    (req, res, next) => {
+        console.log('rim you are there');
+        console.log(req.body);
+        next();
+    },
+    passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
+    (req, res) => {
+        // Successful authentication
+        console.log('Succeed !');
+        res.redirect('/');
+    }
 );
 
-app.get('*', (req, res) => { res.sendFile(path.join(__dirname, 'client/build/index.html')) })
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build/index.html'));
+});
 
-server.listen(PORT, () => {console.log(`Started server on => http://localhost:${PORT}`)})
+server.listen(PORT, () => {
+    console.log(`Started server on => http://localhost:${PORT}`);
+});
