@@ -15,7 +15,7 @@ const server = http.Server(app)
 const PORT = process.env.PORT
 
 app.use(cors())
-app.use(express.static(__dirname + '/client'))
+app.use(express.static(__dirname + '/client/build'))
 app.use(bodyParser.json({ limit: "15360mb", type: 'application/json' }))
 app.use(bodyParser.urlencoded({ extended: true }))
 
