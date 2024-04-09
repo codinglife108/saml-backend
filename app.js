@@ -29,7 +29,7 @@ passport.deserializeUser((user, done) => done(null, user));
 const samlStrategy = new SamlStrategy(
   {
     entryPoint: 'https://login.salesforce.com/?so=00D7R000005HjV2',
-    issuer: 'https://bet123.ninja/home',
+    issuer: 'https://bet123.ninja.com/api/auth/saml/callback',
     // issuer: 'https://saas-innovation-41572.my.salesforce.com',
     callbackUrl: 'https://bet123.ninja.com/api/auth/saml/callback',
     cert: 
