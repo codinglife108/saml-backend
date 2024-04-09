@@ -85,6 +85,11 @@ app.get(
 
 app.post(
   '/api/auth/saml/callback',
+  (req,res,next) => {
+    console.log("rim you are there")
+    console.log(req.body)
+    next()
+  },
   passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
   (req, res) => {
     // Successful authentication
