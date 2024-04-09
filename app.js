@@ -32,7 +32,7 @@ const samlStrategy = new SamlStrategy(
         + "&metaAlias=/idp"
         + "&spEntityID=https://bet123.ninja/metadata/",
         issuer: 'https://saas-innovation-41572.my.salesforce.com',
-        callbackUrl: 'https://bet123.ninja.com/api/auth/saml/callback',
+        callbackUrl: 'https://bet123.ninja/api/auth/saml/callback',
         cert: `-----BEGIN CERTIFICATE-----
 MIIErDCCA5SgAwIBAgIOAY7DS+C5AAAAAA4BZpEwDQYJKoZIhvcNAQELBQAwgZAx
 KDAmBgNVBAMMH1NlbGZTaWduZWRDZXJ0XzA5QXByMjAyNF8xNDM4MzMxGDAWBgNV
@@ -84,7 +84,7 @@ passport.use(samlStrategy);
 app.get('/metadata', function (req, res) {
   //Send custom metadata
        res.type('application/xml');
-       res.sendfile(__dirname + "/metadata.xml");
+       res.sendFile(__dirname + "/metadata.xml");
      }
    );
 
