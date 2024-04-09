@@ -69,7 +69,11 @@ app.get(
         console.log(req.body);
         next();
     },
-    passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
+    passport.authenticate('saml', { 
+      successRedirect: 'https://bet123.ninja/api/auth/saml/callback',
+      failureRedirect: '/', 
+      failureFlash: true 
+    }),
     (req, res) => {
         console.log('Send login requeset');
         res.redirect('/');
