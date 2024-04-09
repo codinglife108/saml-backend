@@ -33,6 +33,7 @@ const samlStrategy = new SamlStrategy(
         // + "&spEntityID=https://bet123.ninja/metadata/",
         issuer: 'https://saas-innovation-41572.my.salesforce.com',
         callbackUrl: 'https://bet123.ninja/api/auth/saml/callback',
+        path: '/api/auth/saml/callback',
         cert: `MIIErDCCA5SgAwIBAgIOAY7DS+C5AAAAAA4BZpEwDQYJKoZIhvcNAQELBQAwgZAxKDAmBgNVBAMMH1NlbGZTaWduZWRDZXJ0XzA5QXByMjAyNF8xNDM4MzMxGDAWBgNVBAsMDzAwRDdSMDAwMDA1SGpWMjEXMBUGA1UECgwOU2FsZXNmb3JjZS5jb20xFjAUBgNVBAcMDVNhbiBGcmFuY2lzY28xCzAJBgNVBAgMAkNBMQwwCgYDVQQGEwNVU0EwHhcNMjQwNDA5MTQzODMzWhcNMjUwNDA5MTIwMDAwWjCBkDEoMCYGA1UEAwwfU2VsZlNpZ25lZENlcnRfMDlBcHIyMDI0XzE0MzgzMzEYMBYGA1UECwwPMDBEN1IwMDAwMDVIalYyMRcwFQYDVQQKDA5TYWxlc2ZvcmNlLmNvbTEWMBQGA1UEBwwNU2FuIEZyYW5jaXNjbzELMAkGA1UECAwCQ0ExDDAKBgNVBAYTA1VTQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ1UvvEPLiCUoDDMrPPDzeaFK6YVI0n9jLmQm8pP3lIwkj029QxySVTyA7J+62aJ6GbUON43KL8ekIdPqthIfsr63XqsZ5ZxW19/wm3lNTFvYRYEz5WR1/nMdEEG3/tZ9EUhwO3V706tjJtQQCmwvEM12t1duBlvgjE4tSt4eY2spgj3J5XiYXx/+ELgUovIcX39sVwxSxskJ8OY1sPwzkavhA7s/aOvDnEJrrKngR6JfHDCcyONRh7/bKMLyOgNXxEVKUQ1ouCXsQ8CbexklsK5ta1KoIWX5UaKPz7KRosYavTzT2BxY31+o+OA4Svk1NNlA7Jxd8cIGOXVoZf5Kn0CAwEAAaOCAQAwgf0wHQYDVR0OBBYEFJfs53wHlB8wmRurYpNW3uKq9O6vMA8GA1UdEwEB/wQFMAMBAf8wgcoGA1UdIwSBwjCBv4AUl+znfAeUHzCZG6tik1be4qr07q+hgZakgZMwgZAxKDAmBgNVBAMMH1NlbGZTaWduZWRDZXJ0XzA5QXByMjAyNF8xNDM4MzMxGDAWBgNVBAsMDzAwRDdSMDAwMDA1SGpWMjEXMBUGA1UECgwOU2FsZXNmb3JjZS5jb20xFjAUBgNVBAcMDVNhbiBGcmFuY2lzY28xCzAJBgNVBAgMAkNBMQwwCgYDVQQGEwNVU0GCDgGOw0vguQAAAAAOAWaRMA0GCSqGSIb3DQEBCwUAA4IBAQAwVrNVTaZ4SKsNfiRT3z6CriF68KTkhkuu+wZ3EK32ap+5MJ6MQ9IFAepg6+OQ86Al8N574PC6GEN5rfNfivKQor4ZEM9Vpv2wXqsjk6iKKQN/3SYg42AZdUK2hmbGszC3GKmSgOP9pZ0/cklFJTGvzP5No+QXi2lDWTIpeJo7ldZB5lFjU7CmyWOK/zU6oVFm5j0xNVvAGpS8n9M3YNLe04ZNJkhUNgauTgpnYbkp9XAKbyTFjmRe0Bs3nuLjMeR8WfWpXNzltg3dqLArHnwDNl6CraLpIYUiNhlo/aTt7aJDLU7S1ssfbBUaSAvlBhOJndibRrS9LdBr/RzuGy5D`, // Salesforce certificate
     },
     function (profile, done) {
@@ -71,7 +72,7 @@ app.get(
     },
     passport.authenticate('saml', { 
       successRedirect: 'https://bet123.ninja/api/auth/saml/callback',
-      failureRedirect: '/', 
+      failureRedirect: 'https://bet123.ninja/api/auth/saml/callback', 
       failureFlash: true 
     }),
     (req, res) => {
