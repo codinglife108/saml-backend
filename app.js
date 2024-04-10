@@ -31,7 +31,8 @@ const cert = fs.readFileSync('./config/SelfSignedCert_10Apr2024_044157.crt', 'ut
 
 const samlStrategy = new SamlStrategy(
     {
-        entryPoint: 'https://login.salesforce.com/?so=00D2o000001R0Az',
+        // entryPoint: 'https://login.salesforce.com/?so=00D2o000001R0Az',
+        entryPoint: 'https://connect-customer-1759.my.salesforce.com/idp/login?app=0sp2o000000TNXR',
         issuer: 'https://connect-customer-1759.my.salesforce.com',
         callbackUrl: 'https://bet123.ninja/api/auth/saml/callback',
         cert: cert, // Salesforce certificate
