@@ -37,7 +37,6 @@ const cert = fs.readFileSync('./config/al_lin.crt', 'utf-8');
 
 const samlStrategy = new SamlStrategy(
     {
-        // entryPoint: 'https://login.salesforce.com/?so=00D2o000001R0Az',
         entryPoint: 'https://force-momentum-5090.my.salesforce.com/idp/login?app=0spKj000000oLkP',
         issuer: 'https://force-momentum-5090.my.salesforce.com',
         callbackUrl: 'https://bet123.ninja/api/auth/saml/callback',
@@ -46,16 +45,11 @@ const samlStrategy = new SamlStrategy(
     function (profile, done) {
         console.log('profile', profile);
         return done(null, {
-            id: profile.id,
             email: profile.email,
-            // displayName: profile.cn,
-            //  firstName: profile.givenName,
-            // lastName: profile.sn,
-            saml: {
-                nameID: profile.nameID,
-                nameIDFormat: profile.nameIDFormat,
-                token: profile.getAssertionXml(),
-            },
+            displayName: profile.username,
+            samlNameID: profile.nameID,
+            samlNameIDFormat: profile.nameIDFormat,
+            token: 'test_token'
         });
     }
 );
@@ -72,9 +66,6 @@ app.get(
         console.log('Send login requeset');
         res.redirect('/');
     }
-    // (req, res) => {
-    //   console.log(123)
-    // }
 );
 
 app.post(
@@ -82,9 +73,9 @@ app.post(
     passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
     (req, res) => {
         // Successful authentication
-        console.log(req.body, req.session)
+        console.log(req.session)
         console.log('Succeed !');
-        res.redirect(`/home?token=123`);
+        res.redirect(`/home?token=${req.session.token}`);
     }
 );
 
