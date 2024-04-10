@@ -57,20 +57,8 @@ const samlStrategy = new SamlStrategy(
 
 passport.use(samlStrategy);
 
-app.get('/metadata', function (req, res) {
-  //Send custom metadata
-       res.type('application/xml');
-       res.sendFile(__dirname + "/metadata.xml");
-     }
-   );
-
 app.get(
     '/login',
-    (req, res, next) => {
-        console.log('rim I am here');
-        console.log(req.body);
-        next();
-    },
     passport.authenticate('saml', { 
       failureRedirect: '/fail', 
       failureFlash: true 
@@ -86,14 +74,12 @@ app.get(
 
 app.post(
     '/api/auth/saml/callback',
-    (req, res, next) => {
-        console.log('rim you are there');
-        console.log(req.body);
-        next();
-    },
     passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
     (req, res) => {
         // Successful authentication
+
+        console.log(req.body)
+
         console.log('Succeed !');
         res.redirect('/');
     }
