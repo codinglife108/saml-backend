@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const fs = require('fs');
 const cors = require('cors');
 const path = require('path');
 const http = require('http');
@@ -26,14 +27,14 @@ app.use(passport.session());
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
 
+const cert = fs.readFileSync('./config/SelfSignedCert_10Apr2024_044157.crt', 'utf-8');
+
 const samlStrategy = new SamlStrategy(
     {
-        entryPoint: 'https://login.salesforce.com/?so=00D7R000005HjV2'
-        + "&metaAlias=/idp"
-        + "&spEntityID=https://bet123.ninja/metadata/",
-        issuer: 'https://saas-innovation-41572.my.salesforce.com',
+        entryPoint: 'https://login.salesforce.com/?so=00D2o000001R0Az',
+        issuer: 'https://connect-customer-1759.my.salesforce.com',
         callbackUrl: 'https://bet123.ninja/api/auth/saml/callback',
-        cert: `MIIEWzCCA0OgAwIBAgIOAY7ERXAOAAAAAAQ6vSMwDQYJKoZIhvcNAQELBQAwdzEPMA0GA1UEAwwGbGluMTA4MRgwFgYDVQQLDA8wMEQ3UjAwMDAwNUhqVjIxFzAVBgNVBAoMDlNhbGVzZm9yY2UuY29tMRYwFAYDVQQHDA1TYW4gRnJhbmNpc2NvMQswCQYDVQQIDAJDQTEMMAoGA1UEBhMDVVNBMB4XDTI0MDQwOTE5MTEwOFoXDTI1MDQwOTEyMDAwMFowdzEPMA0GA1UEAwwGbGluMTA4MRgwFgYDVQQLDA8wMEQ3UjAwMDAwNUhqVjIxFzAVBgNVBAoMDlNhbGVzZm9yY2UuY29tMRYwFAYDVQQHDA1TYW4gRnJhbmNpc2NvMQswCQYDVQQIDAJDQTEMMAoGA1UEBhMDVVNBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAg5gOOXXjp8MS5Q9lRaXQQ69qP3Z4r30MP42Excbd6e4FTlHd1/9OWcYsO6ev0SnkDsrUWjwaiaXzJ5rz4LWQc6FAqepVqbx1Y0yAA43xHKRpeqMLt633ateFvllmgjTlXQ5sFvCEBWUc9NrsJZMeL0ODuYwj4t4HFVmLgSzMWne5pJm1Mn5Y14DDvQTJ6BwL3XvxGeYlDhBwvPxbFaps1bzLisJg3Gq+X2FHKr65K8sT9wz8sB5rc4p+bPwGww7OxAh1FJ6z4AK9orujWN/b3/0VmUntWhDo2+uUXxCOlLiakrLlEntp3wjHsGL+AMD1Gkzfwl8ANSNJ48Oh03Qd+wIDAQABo4HkMIHhMB0GA1UdDgQWBBTYkfvb04l2jO0lCB7F6FsnUZi+tjAPBgNVHRMBAf8EBTADAQH/MIGuBgNVHSMEgaYwgaOAFNiR+9vTiXaM7SUIHsXoWydRmL62oXukeTB3MQ8wDQYDVQQDDAZsaW4xMDgxGDAWBgNVBAsMDzAwRDdSMDAwMDA1SGpWMjEXMBUGA1UECgwOU2FsZXNmb3JjZS5jb20xFjAUBgNVBAcMDVNhbiBGcmFuY2lzY28xCzAJBgNVBAgMAkNBMQwwCgYDVQQGEwNVU0GCDgGOxEVwDgAAAAAEOr0jMA0GCSqGSIb3DQEBCwUAA4IBAQANNV29ZtSDNTLQDu4Ri3xUnUZJELAxgaoOav3CEWDyoJkzHvtn032ipvyh1ig4CG/mvwTDAxfDyQyaUUysj1bIVnE0XC/jZ2uHw/rLfxrNPtWfLt4Yqb3biYbKf5aD1V6uAz4yLmk2WrY6uuIdE42yZoXmOAjhk5SLy9OVd4ddY9XuTVvw8RMNqppV1aZsKsyjTzW6LcnaG6vqyQ/nX+V5mJqWZpwob1aHo5jxdHo6mDwlNMMSew44zI4V7U2c4FMX2KnuEsMEf24EkDjeyGn9fG03lywzn0/NWSb2h7izfxr/vv72K85FK6S1sEOh1LvoDMFiBInvcHG+VeoAcLYm`, // Salesforce certificate
+        cert: cert, // Salesforce certificate
     },
     function (profile, done) {
         console.log('profile', profile);
@@ -70,8 +71,7 @@ app.get(
         next();
     },
     passport.authenticate('saml', { 
-      successRedirect: 'https://bet123.ninja/api/auth/saml/callback',
-      failureRedirect: 'https://bet123.ninja/api/auth/saml/callback', 
+      failureRedirect: '/fail', 
       failureFlash: true 
     }),
     (req, res) => {
