@@ -24,8 +24,14 @@ app.use(session({ secret: process.env.SECRET, resave: false, saveUninitialized: 
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
+passport.serializeUser((user, done) => {
+    console.log(user, 'serializeUser')
+    done(null, user)
+});
+passport.deserializeUser((user, done) => {
+    console.log(user, 'deserializeUser')
+    done(null, user)
+});
 
 const cert = fs.readFileSync('./config/al_lin.crt', 'utf-8');
 
@@ -45,7 +51,6 @@ const samlStrategy = new SamlStrategy(
             // displayName: profile.cn,
             //  firstName: profile.givenName,
             // lastName: profile.sn,
-            sessionIndex: profile.sessionIndex,
             saml: {
                 nameID: profile.nameID,
                 nameIDFormat: profile.nameIDFormat,
@@ -77,9 +82,6 @@ app.post(
     passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
     (req, res) => {
         // Successful authentication
-
-        console.log(req.body)
-
         console.log('Succeed !');
         res.redirect('/');
     }
