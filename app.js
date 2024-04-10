@@ -73,9 +73,15 @@ app.post(
     passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
     (req, res) => {
         // Successful authentication
-        console.log(req.session)
         console.log('Succeed !');
-        res.redirect(`/home?token=${req.session.token}`);
+
+        console.log(req.session)
+
+        const session = req.session
+        if(session && session.passport && session.passport.user) {
+            res.redirect(`/home?token=${session.passport.user.token}`);
+        }
+
     }
 );
 
