@@ -79,7 +79,7 @@ app.post(
 
         const session = req.session
         if(session && session.passport && session.passport.user) {
-            res.redirect(`/home?token=${session.passport.user.token}`);
+            res.redirect(`http://localhost:3000/home?token=${session.passport.user.token}`);
         }
 
     }
